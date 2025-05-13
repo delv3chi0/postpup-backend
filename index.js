@@ -6,6 +6,10 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+app.get('/', (req, res) => {
+  res.send('Welcome to the PostPup API');
+});
+
 app.get('/test', (req, res) => {
   res.json({ message: 'PostPup backend is working!' });
 });
