@@ -27,6 +27,10 @@ app.use(express.json());
 console.log("✅ Middleware registered");
 
 // POST route for testing login
+app.get('/', (req, res) => {
+  res.send('Welcome to the PostPup API');
+});
+
 app.post('/api/login', (req, res) => {
   console.log("➡️ Received POST /api/login");
   console.log("Request body:", req.body);
@@ -45,8 +49,4 @@ app.post('/api/login', (req, res) => {
 const PORT = 5000;
 app.listen(PORT, () => {
   console.log(`✅ Server running on port ${PORT}`);
-});
-
-app.get('/', (req, res) => {
-  res.send('Welcome to the PostPup API');
 });
