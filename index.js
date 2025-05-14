@@ -4,7 +4,7 @@ const cors    = require('cors');
 const mongoose = require('mongoose');
 const jwt       = require('jsonwebtoken');
 const bcrypt    = require('bcryptjs');
-const { Configuration, OpenAIApi } = require('openai');
+const { OpenAI } = require('openai');
 const Bull      = require('bull');
 
 // 1️⃣ Connect MongoDB
@@ -16,9 +16,10 @@ mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopol
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.get('/ping', (req, res) => { console.log('🔔  /ping hit'); res.send('pong'); });
 
 // 3️⃣ Setup OpenAI & Queue
-const openai = new OpenAIApi(new Configuration({ apiKey: process.env.OPENAI_API_KEY }));
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 const scheduleQueue = new Bull('scheduleQueue', process.env.REDIS_URL);
 
 // 4️⃣ Define Models
@@ -75,6 +76,7 @@ app.post('/api/schedule-post', async (req, res) => {
 
 // 8️⃣ Analytics Stub
 app.get('/api/analytics', async (req, res) => {
+console.log('📊  /api/analytics hit');
   // TODO: fetch real analytics from Mongo
   res.json({ data: [] });
 });
