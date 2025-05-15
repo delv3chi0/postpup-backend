@@ -64,19 +64,39 @@ if (isProd) {
 // — Auth routes —
 // Signup
 app.post('/api/signup', async (req, res) => {
-  try {
-    const { email, password } = req.body;
-    if (!email || !password) return res.status(400).json({ error: 'Email & password required' });
-    const existingUser = await User.findOne({ email });
-    if (existingUser) return res.status(409).json({ error: 'Email already exists' });
-    const hash = await bcrypt.hash(password, 10);
-    const user = await User.create({ email, passwordHash: hash });
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' }); // Added expiration
-    res.status(201).json({ token }); // 201 Created status
-  } catch (error) {
-    console.error('❌ Error during signup:', error);
-    res.status(500).json({ error: 'Failed to create user' });
-  }
+  try {
+    const { email, password } = req.body;
+
+    // --- Server-side validation ---
+    if (!email || !password) {
+      return res.status(400).json({ error: 'Email and password are required' });
+    }
+    if (!/\S+@\S+\.\S+/.test(email)) {
+      return res.status(400).json({ error: 'Invalid email format' });
+    }
+    if (password.length < 6) {
+      return res.status(400).json({ error: 'Password must be at least 6 characters long' });
+    }
+
+    // --- Check for existing user ---
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(409).json({ error: 'Email already exists' });
+    }
+
+    // --- Hash the password ---
+    const hash = await bcrypt.hash(password, 10);
+
+    // --- Create the new user ---
+    const user = await User.create({ email, passwordHash: hash });
+
+    // --- Respond to the frontend ---
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    res.status(201).json({ token, message: 'User registered successfully!' }); // 201 Created
+  } catch (error) {
+    console.error('❌ Error during signup:', error);
+    res.status(500).json({ error: 'Failed to create user' });
+  }
 });
 
 // Login
