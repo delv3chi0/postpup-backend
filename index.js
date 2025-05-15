@@ -2,7 +2,7 @@ require('dotenv').config();
 console.log('✅ .env loaded, JWT_SECRET is:', process.env.JWT_SECRET);
 
 const express = require('express');
-const cors    = require('cors');
+const cors    = require('cors'); // Import the cors middleware
 const mongoose = require('mongoose');
 const bcrypt    = require('bcryptjs');
 const Bull      = require('bull');
@@ -19,7 +19,12 @@ mongoose.connect(process.env.MONGO_URI)
 const app = express();
 
 // Middleware - Essential for request handling
-app.use(cors());
+const corsOptions = {
+  origin: 'https://postpup-frontend.vercel.app', // Only allow requests from your Vercel frontend
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  credentials: true, // If you need to handle cookies or authorization headers
+};
+app.use(cors(corsOptions)); // Use the cors middleware with options
 app.use(express.json());
 
 // 🖐 Ping endpoint - Useful for health checks
