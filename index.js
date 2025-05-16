@@ -9,6 +9,7 @@ const Bull      = require('bull');
 const jwt       = require('jsonwebtoken');
 const { OpenAI } = require('openai');
 const { Schema, model } = require('mongoose');
+const User = require('./models/User');
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI)
@@ -183,3 +184,39 @@ async function gracefulShutdown() {
 }
 process.on('SIGINT', gracefulShutdown);
 process.on('SIGTERM', gracefulShutdown);
+
+const User = require('./models/User');
+
+app.post('/api/signup', async (req, res) => {
+  const { email, password, firstName, lastName } = req.body;
+  try {
+    const existingUser = await User.findOne({ email });
+    if (existingUser) return res.status(400).json({ error: 'Email already registered' });
+
+    const newUser = new User({ email, password, firstName, lastName });
+    await newUser.save();
+    res.status(201).json({ message: 'User registered successfully' });
+  } catch (err) {
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+const User = require('./models/User');
+const bcrypt = require('bcrypt');
+
+// Handle user signup
+app.post('/api/signup', async (req, res) => {
+  const { email, password, firstName, lastName } = req.body;
+  try {
+    const existingUser = await User.findOne({ email });
+    if (existingUser) return res.status(409).json({ error: 'Email already in use' });
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const newUser = new User({ email, password: hashedPassword, firstName, lastName });
+    await newUser.save();
+    res.status(201).json({ message: 'User created successfully' });
+  } catch (err) {
+    console.error('Signup error:', err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
