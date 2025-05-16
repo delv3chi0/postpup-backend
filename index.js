@@ -193,7 +193,6 @@ app.post('/api/signup', async (req, res) => {
   }
 });
 
-const bcrypt = require('bcrypt');
 
 // Handle user signup
 app.post('/api/signup', async (req, res) => {
