@@ -35,7 +35,6 @@ app.get('/ping', (req, res) => {
 });
 
 // Define User model
-const User = model('User', new Schema({
   email: { type: String, unique: true, required: true, trim: true, lowercase: true },
   passwordHash: { type: String, required: true },
   createdAt: { type: Date, default: Date.now },
