@@ -34,11 +34,6 @@ app.get('/ping', (req, res) => {
 });
 
 // Define User model
-  email: { type: String, unique: true, required: true, trim: true, lowercase: true },
-  passwordHash: { type: String, required: true },
-  createdAt: { type: Date, default: Date.now },
-  updatedAt: { type: Date, default: Date.now }
-}));
 
 // — Scheduling queue (only in production) —
 const isProd = process.env.NODE_ENV === 'production';
