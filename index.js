@@ -9,7 +9,6 @@ const Bull      = require('bull');
 const jwt       = require('jsonwebtoken');
 const { OpenAI } = require('openai');
 const { Schema, model } = require('mongoose');
-const User = require('./models/User');
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI)
@@ -184,7 +183,6 @@ async function gracefulShutdown() {
 process.on('SIGINT', gracefulShutdown);
 process.on('SIGTERM', gracefulShutdown);
 
-const User = require('./models/User');
 
 app.post('/api/signup', async (req, res) => {
   const { email, password, firstName, lastName } = req.body;
@@ -200,7 +198,6 @@ app.post('/api/signup', async (req, res) => {
   }
 });
 
-const User = require('./models/User');
 const bcrypt = require('bcrypt');
 
 // Handle user signup
