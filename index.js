@@ -18,9 +18,8 @@ mongoose.connect(process.env.MONGO_URI)
 const app = express();
 
 const corsOptions = {
-  origin: ["https://postpup-frontend.vercel.app"],
-  methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"],
-  allowedHeaders: ["Content-Type", "Authorization"],
+  origin: "*",
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   credentials: true,
 };
 app.use(cors(corsOptions));
