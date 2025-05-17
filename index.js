@@ -9,7 +9,6 @@ const Bull = require('bull');
 const jwt = require('jsonwebtoken');
 const { OpenAI } = require('openai');
 const { Schema, model } = require('mongoose');
-const redis = require('./redis');
 const User = require('./models/User');
 
 mongoose.connect(process.env.MONGO_URI)
